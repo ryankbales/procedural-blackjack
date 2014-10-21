@@ -4,10 +4,11 @@ while play_again == true
   #create the deck of card_suits
   CARD_VALUES = {two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, jack: 10, queen: 10, king: 10, ace: 11}
   card_face = ["two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king", "ace"]
-  card_suits = ["hearts", "dimonds", "clubs", "spades"]
+  card_suits = ["hearts", "diamonds", "clubs", "spades"]
   deck = card_face.product(card_suits)
 
   puts "Lets play Blackjack"
+  puts "==================="
   shuffled_deck = deck.shuffle
 
   player_cards = []
@@ -91,10 +92,11 @@ while play_again == true
     end
   end
 
-  def player_plays(players_hand, hand_value, deck, values=CARD_VALUES)
-    puts "You have #{hand_value}"
+  def player_plays(players_hand, hand_value, deck, values)
     play_status = true
     while play_status
+      puts "You have #{hand_value}"
+      puts "================="
       play = hit_or_stay?
       if play
         player_hand = deal_player_one_card(deck, players_hand)
@@ -102,53 +104,67 @@ while play_again == true
         hand_status = check_hand(hand_value, play_status)
         case hand_status
         when 'blackjack'
+          puts "================="
           show_hand(player_hand)
           puts "#{hand_value}!, you have Blackjack!  Dealers turn."
+          puts "================="
           play_status = false
           return hand_value
         when 'bust'
+          puts "================="
           show_hand(player_hand)
           puts "You have #{hand_value}, you Bust :("
+          puts "================="
           play_status = false
-          hand_value = 'bust'
           return hand_value
         when hand_status == false
           player_plays(players_hand, hand_value, deck)
         end
       else
+        puts "================="
         show_hand(players_hand)
         puts "You have decided to stay with #{hand_value}, good luck!"
+        puts "================="
         return hand_value
       end
     end
   end
 
-  def dealer_plays(dealers_hand, hand_value, deck, values=CARD_VALUES)
+  def dealer_plays(dealers_hand, hand_value, deck, values)
     puts "Dealer has #{hand_value}"
     show_hand(dealers_hand)
-    if (hand_value.is_a?(Integer))
-      if (hand_value < 17)
-        begin
-          deal_player_one_card(deck, dealers_hand)
-          puts "Dealers cards:"
-          show_hand(dealers_hand)
-          hand_value = get_hand_value(player, values)
-          puts "Dealer has #{hand_value}"
-        end if (hand_value >= 17 && !blackjack?(hand_value) && !bust?(hand_value)) || (blackjack?(hand_value)) || (bust?(hand_value))
-        return hand_value
-      elsif hand_value == 17
-        puts "Dealer has 17 and stays"
-        return hand_value
-      elsif (hand_value > 17) && (hand_value < 21)
+    puts "=============="
+    if (hand_value < 17)
+      while hand_value < 17
+        puts "Dealer hits."
+        puts "=============="
+        deal_player_one_card(deck, dealers_hand)
         puts "Dealers cards:"
+        puts "=============="
         show_hand(dealers_hand)
-        puts "Dealer stays at #{hand_value}"
+        puts "=============="
+        hand_value = get_hand_value(dealers_hand, values)
+        puts "Dealer has #{hand_value}"
+        puts "=============="
+      end
+      if hand_value <= 21
+        return hand_value
+      else
+        puts "Dealer Busts!"
         return hand_value
       end
-    else
+    elsif hand_value == 17
+      puts "=============="
+      puts "Dealer has 17 and stays"
+      puts "=============="
+      return hand_value
+    elsif (hand_value > 17) && (hand_value < 21)
+      puts "=============="
       puts "Dealers cards:"
       show_hand(dealers_hand)
-      hand_value = 'bust'
+      puts "=============="
+      puts "Dealer stays at #{hand_value}"
+      puts "=============="
       return hand_value
     end
   end
@@ -187,8 +203,7 @@ while play_again == true
     puts "Players cards:"
     show_hand(player_cards)
     puts "================"
-    puts "Dealers face up card:"
-    show_hand(player_cards)
+    puts "Dealers cards:"
     show_hand(dealer_cards)
     play_again = play_again?
   elsif player_has_blackjack && dealer_has_blackjack
@@ -206,27 +221,33 @@ while play_again == true
     puts "================"
     puts "Dealers face up card:"
     show_one_card(dealer_cards)
+    puts "================"
 
     #players turn
-    player_hand_value = player_plays(player_cards, player_hand_value, shuffled_deck)
+    player_hand_value = player_plays(player_cards, player_hand_value, shuffled_deck, CARD_VALUES)
 
-    #dealers turn
-    dealer_hand_value = dealer_plays(player_cards, player_hand_value, shuffled_deck)
-
-    #check hands
-    if (player_hand_value != 'bust') && (dealer_hand_value != 'bust')
+    #dealers turn, if player didn't bust already
+    if player_hand_value <= 21
+      dealer_hand_value = dealer_plays(dealer_cards, dealer_hand_value, shuffled_deck, CARD_VALUES)
+      puts "Players cards:"
+      show_hand(player_cards)
+      puts "================"
+      puts "Dealers cards:"
+      show_hand(dealer_cards)
+      puts "================"
       if player_hand_value > dealer_hand_value
-        puts "You have #{player_hand_value} and dealer has #{dealer_hand_value}: You Win!"
+        puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}. You win!"
+        play_again = play_again?
       elsif player_hand_value < dealer_hand_value
-        puts "You have #{player_hand_value} and dealer has #{dealer_hand_value}: Dealer Wins!"
-      else
-        puts "You have #{player_hand_value} and dealer has #{dealer_hand_value}: It's a push!"
+        puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}. You lose:("
+        play_again = play_again?
+      elsif player_hand_value == dealer_hand_value
+        puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}.  It's a push!"
+        play_again = play_again?
       end
-    elsif (player_hand_value != 'bust') && (dealer_hand_value == 'bust')
-      puts "You have #{player_hand_value} and dealer has #{dealer_hand_value}: Dealer busts, you win!"
     else
-      puts "You have #{player_hand_value} and dealer has #{dealer_hand_value}: You bust, Dealer wins!"
+      puts "Looks like you busted, better luck next time."
+      play_again = play_again?
     end
   end
-  play_again = play_again?
 end
