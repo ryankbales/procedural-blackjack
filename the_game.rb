@@ -38,6 +38,10 @@ while play_again == true
     player_card_values.each do |value|
       hand_value += value
     end
+    #change ace value to 1 if need be
+    if (player_card_values.include?(11)) && (hand_value > 21)
+      hand_value = hand_value - 10
+    end
     return hand_value
   end
 
@@ -238,10 +242,10 @@ while play_again == true
       if player_hand_value > dealer_hand_value
         puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}. You win!"
         play_again = play_again?
-      elsif player_hand_value < dealer_hand_value
+      elsif (player_hand_value < dealer_hand_value) && (!bust?(dealer_hand_value))
         puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}. You lose:("
         play_again = play_again?
-      elsif player_hand_value == dealer_hand_value
+      elsif (player_hand_value == dealer_hand_value) && (!bust?(dealer_hand_value)) && (!bust?(player_hand_value))
         puts "Player has #{player_hand_value}, Dealer has #{dealer_hand_value}.  It's a push!"
         play_again = play_again?
       end
