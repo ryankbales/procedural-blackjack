@@ -1,8 +1,8 @@
 require 'pry'
 play_again = true
-while play_again == true
+CARD_VALUES = {two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, jack: 10, queen: 10, king: 10, ace: 11}
+while play_again
   #create the deck of card_suits
-  CARD_VALUES = {two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, jack: 10, queen: 10, king: 10, ace: 11}
   card_face = ["two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king", "ace"]
   card_suits = ["hearts", "diamonds", "clubs", "spades"]
   deck = card_face.product(card_suits)
@@ -46,19 +46,11 @@ while play_again == true
   end
 
   def blackjack?(hand_value)
-    if hand_value == 21
-      return true
-    else
-      return false
-    end
+    hand_value == 21 ? true : false
   end
 
   def bust?(hand_value)
-    if hand_value > 21
-      return true
-    else
-      return false
-    end
+    hand_value > 21 ? true : false
   end
 
   def show_hand(hand)
