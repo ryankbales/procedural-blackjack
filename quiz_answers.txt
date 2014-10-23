@@ -1,0 +1,18 @@
+1.)  a = 1
+
+2.)  An array uses values with each having an index starting at zero where a hash uses key/value pairs.
+
+3.)  arr = [1, 2, 3, 3] => [1, 2, 3, 3]
+     [1, 2, 3, 3].uniq => [1, 2, 3]
+     [1, 2, 3, 3].uniq! => [1, 2, 3]
+
+4.)  Map modifies the caller and returns the resulting array.  Select will give you a specific item in an array but not modify the caller.
+     If you wanted to modify an array or add data to it you would call arr.map{|a| a + 1}  or arr.map{|a| a.select{a.even?}}
+
+5.)  Create a Hash using strings as keys instead of Symbols:  my_hash = {"key1" => "value1", "key2" => "value2"}
+
+6.)    x = 1 ====== x.odd? ? "no way!" : "yes, sir!"  =>  "no way!"
+
+7.)  x = 4
+
+8.)  Will return a Undefined variable error.
